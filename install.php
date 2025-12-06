@@ -3,6 +3,22 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Anti-Bot Protection for Installer
+if (!function_exists('is_installer_bot')) {
+    function is_installer_bot() {
+        if (!isset($_SERVER['HTTP_USER_AGENT'])) return false;
+        $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+        $bots = ['twitterbot', 'facebookexternalhit', 'whatsapp', 'telegrambot', 'discordbot', 'slackbot', 'googlebot', 'bingbot', 'yandex', 'curl', 'wget'];
+        foreach ($bots as $bot) { if (strpos($ua, $bot) !== false) return true; }
+        return false;
+    }
+}
+
+if (is_installer_bot()) {
+    header('HTTP/1.0 404 Not Found');
+    exit();
+}
+
 $message = "";
 $status = "";
 
@@ -410,7 +426,7 @@ require_once 'config.php';
 function is_bot() {
     if (!isset($_SERVER['HTTP_USER_AGENT'])) return false;
     $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
-    $bots = ['twitterbot', 'facebookexternalhit', 'whatsapp', 'telegrambot', 'discordbot', 'slackbot', 'googlebot', 'bingbot', 'yandex'];
+    $bots = ['twitterbot', 'facebookexternalhit', 'whatsapp', 'telegrambot', 'discordbot', 'slackbot', 'googlebot', 'bingbot', 'yandex', 'curl', 'wget'];
     foreach ($bots as $bot) { if (strpos($ua, $bot) !== false) return true; }
     return false;
 }
